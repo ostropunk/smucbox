@@ -8,6 +8,8 @@ class Smucbox():
     def __init__(self, configfile='config.txt'):
         self.configfile = self.check_config(configfile)
         self.conf = tk.config_from_file(configfile)
+        self.user_token = tk.prompt_for_user_token(
+                            *self.conf, scope=tk.scope.every)
 
     def check_config(self, configfile):
         config_path = Path(configfile)
@@ -24,7 +26,18 @@ class Smucbox():
 
 def main():
     smucbox = Smucbox()
-    smucbox
+    
+    spotify = tk.Spotify(smucbox.user_token)
+    artist = spotify.current_user_top_artists(limit=1).items[0]
+    related = spotify.artist_related_artists(artist.id)
+    followed = spotify.followed_artists(limit=50)
+    followed = spotify.all_items(followed)
+    followed_ids = [f.id for f in followed]
+
+    print(f'Artists related to {artist.name}:')
+    for a in related:
+        f = ' F -' if a.id in followed_ids else 'NF -'
+        print(f, a.name)
 
 
 if __name__ == '__main__':
