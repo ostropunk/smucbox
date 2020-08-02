@@ -1,44 +1,56 @@
-import tekore as tk
-from pathlib import Path
+import spotipy
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522 as rc
+from spotipy.oauth2 import SpotifyOAuth
 
+scope = "user-library-read"
+
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, cache_path='cache/cache.txt'))
+
+results = sp.current_user_saved_tracks()
 
 class Smucbox():
-    '''Class for creating a smucbox-instance.'''
+    '''Class for handling spotify connections.'''
 
-    def __init__(self, configfile='config.txt'):
-        self.configfile = self.check_config(configfile)
-        self.conf = tk.config_from_file(configfile)
-        self.user_token = tk.prompt_for_user_token(
-                            *self.conf, scope=tk.scope.every)
+    def __init__(self):
+        '''Method for creating a smucbox'''
+        self.client = self.make_client()
+        self.user = self.client.current_user()
+        
 
-    def check_config(self, configfile):
-        config_path = Path(configfile)
-        if config_path.exists() is False:
-            client_id = input('Enter Client Id: ')
-            client_secret = input('Enter Client Secret: ')
-            redirect_url = input('Enter Redirect url: ')
-
-            tk.config_to_file(configfile, [client_id, client_secret,
-                              redirect_url])
-
-        return configfile
-
-
-def main():
-    smucbox = Smucbox()
+    def make_config_file(self):
+        '''Method for creating a config file.'''
+        pass
     
-    spotify = tk.Spotify(smucbox.user_token)
-    artist = spotify.current_user_top_artists(limit=1).items[0]
-    related = spotify.artist_related_artists(artist.id)
-    followed = spotify.followed_artists(limit=50)
-    followed = spotify.all_items(followed)
-    followed_ids = [f.id for f in followed]
-
-    print(f'Artists related to {artist.name}:')
-    for a in related:
-        f = ' F -' if a.id in followed_ids else 'NF -'
-        print(f, a.name)
+    def make_client(self):
+        '''Method for creating a spotipy client.'''
+        scope = "user-library-read, user-read-playback-state, user-modify-playback-state"
+        
+        return spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, cache_path='cache/cache.txt'))
+    
+    def get_uri(self):
+        reader = rc()
+        print('Read card:')
+        try:
+            id, text = reader.read()
+        finally:
+            GPIO.cleanup()
+            
+        return text.rstrip()
+    
+    def playback(self, uri):
+        urilist = []
+        urilist.append(uri)
+        print(urilist)
+        self.client.start_playback(context_uri=urilist)
+    
+    def run(self):
+        while True:
+            self.playback(self.get_uri())
+            continue
+        
 
 
 if __name__ == '__main__':
-    main()
+    smucbox = Smucbox()
+    smucbox.run()
