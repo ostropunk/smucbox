@@ -1,2 +1,8 @@
-spotify:album:37xl28qGX45H01dsex3nUx
-spotify:playlist:37i9dQZF1E4Bxy431XVrNC
+spotify:album:1HhBu55aklCwIus7KffIji
+spotify:album:5wqa3AIalAtzA7X9HIuAer
+spotify:album:0YS25Dr3hMtMFlVTfuvzl4
+spotify:album:003zaahPSHs6D2vFBWBkC8
+spotify:album:7sJwidjwY9gt44I1AioyKm
+spotify:album:5SIbhjUUfpLeH9yZxfxJZm
+spotify:album:4m2880jivSbbyEGAKfITCa
+spotify:album:2LQYvrh5jOxAAZjiBX3f2b
