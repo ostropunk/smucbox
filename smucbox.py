@@ -39,10 +39,7 @@ class Smucbox():
         return text.rstrip()
     
     def playback(self, uri):
-        urilist = []
-        urilist.append(uri)
-        print(urilist)
-        self.client.start_playback(context_uri=urilist)
+        self.client.start_playback(context_uri=uri)
     
     def run(self):
         while True:
