@@ -16,35 +16,40 @@ class Smucbox():
         '''Method for creating a smucbox'''
         self.client = self.make_client()
         self.user = self.client.current_user()
-        
 
-    def make_config_file(self):
-        '''Method for creating a config file.'''
-        pass
     
     def make_client(self):
         '''Method for creating a spotipy client.'''
         scope = "user-library-read, user-read-playback-state, user-modify-playback-state"
         
         return spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, cache_path='cache/cache.txt'))
-    
+   
+   
     def get_uri(self):
         reader = rc()
         print('Read card:')
         try:
             id, text = reader.read()
+            
         finally:
             GPIO.cleanup()
             
+            
         return text.rstrip()
+    
     
     def playback(self, uri):
         self.client.start_playback(context_uri=uri)
     
     def run(self):
+        
+        
         while True:
-            self.playback(self.get_uri())
-            continue
+            try:
+                self.playback(self.get_uri())
+                continue
+            except:
+                print('Error reading. Try again.')
         
 
 
