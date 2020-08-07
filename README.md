@@ -26,7 +26,9 @@ You vill need to store your credentials somehow. Write this in commandline and s
 nessesary credentials.
  
 export SPOTIPY_CLIENT_ID=client_id_here
+
 export SPOTIPY_CLIENT_SECRET=client_secret_here
+
 export SPOTIPY_REDIRECT_URI=redirect_uri_here
 
 On Windows, use `SET` instead of `export` (does not work in PowerShell)
